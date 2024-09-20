@@ -52,20 +52,20 @@ def generate_large_prime(bits=512) -> int:
 
 # Implement this function
 def generate_key_pairs(bits: int) -> tuple[int, int, int]:
-    """
-    Generate RSA public and private key pairs.
-    Return N, e, d
-    - N must be the product of two random prime numbers p and q
-    - e and d must be multiplicative inverses mod (p-1)(q-1)
-    """
-    p = generate_large_prime( bits // 2)
-    q = generate_large_prime( bits // 2)
+    p = generate_large_prime(bits // 2)
+    q = generate_large_prime(bits // 2)
     N = p * q
 
     phi = (p - 1) * (q - 1)
 
-    e = next(prime for prime in primes if ext_euclid(phi, prime)[2] == 1)
+    e = next(prime for prime in primes if ext_euclid(phi, prime)[2] == 1)  
 
-    d, _, _ = ext_euclid(e, phi)
+    d, _, gcd = ext_euclid(e, phi)
 
+    if gcd != 1:
+        raise ValueError("e and phi are not coprime")
+
+    d = d % phi
+    
     return N, e, d
+
